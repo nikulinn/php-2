@@ -1,12 +1,15 @@
 <?php
 
+
+
 abstract class Shape
 
 {
     protected $a;
     protected $r;
     protected $h;
-
+    protected $name;
+    
     function __construct($a, $r, $h)
     {
         $this->a = $a;
@@ -14,17 +17,34 @@ abstract class Shape
         $this->r = $r;
     }
 
+    public function getName()
+    {
+        return $this->name;
+    }
+
     public abstract function square();
     public abstract function volume();
     public abstract function mass();
-	//а - ребро(радіус для кулі)
-	//h - висота
-	//r - густина
+
+    //а - ребро(радіус для кулі)
+    //h - висота
+    //r - густина
+
 }
+
+
+
+
+
 
 
 class Cube extends Shape
 {
+    function __construct($a, $r, $h)
+    {
+        $this->name = "Куб";
+        parent::__construct($a, $h, $r);
+    }
     public function square()
    {
         return ($this->a * $this->a)*6;
@@ -39,22 +59,21 @@ class Cube extends Shape
     {
         return ($this->r * $this->volume() );
     }
-	
 }
 
 class Parallelepiped extends Shape
 {
     private $b;
     private $c;
-	
-	//b - ребро
-	//c - ребро
-	
+
+    //b - ребро
+    //c - ребро
     
     public function __construct($a, $h, $r, $b, $c)
     {
         $this->b = $b;
         $this->c = $c;
+        $this->name = "Параллелепіпед";        
         parent::__construct($a, $h, $r);
     }
     
@@ -72,21 +91,21 @@ class Parallelepiped extends Shape
     {
         return ($this->r * $this->volume());
     }
-	
 }
 
 class Pyramid extends Shape
 {
     private $b;
     private $l;
-	
-	//b - ребро
-	//l - апофема (висота боковой грани)
+
+    //b - ребро
+    //l - апофема (висота боковой грани)
 
     public function __construct($a, $h, $r, $b, $l)
     {
         $this->b = $b;
         $this->c = $l;
+        $this->name = "Піраміда";
         parent::__construct($a, $h, $r);
     }
 
@@ -115,7 +134,8 @@ class Sphere extends Shape
 {
     public function __construct($a, $r)
     {
-       parent::__construct($a, $r, 0);
+        $this->name = "Куля";
+        parent::__construct($a, $r, 0);
     }
 
     public function square()
@@ -138,25 +158,87 @@ $cube = new Cube(5, 4, 3);
 $parallelepiped = new Parallelepiped(5, 4, 3, 10, 11);
 $pyramid = new Pyramid(5, 4, 3, 10, 2);
 $sphere = new Sphere(5, 4);
+echo "---------------------------------------------------------------------------------------------------------------------<br>";
+echo "Основне завдання : <br><br>";
+echo "Куб : <br>";
+echo "Площа - ". $cube->square()."<br>";
+echo "Об'єм - ". $cube->volume()."<br>";
+echo "Маса - ". $cube->mass()."<br><br>";
 
-echo "Куб"."\n";
-echo "Площа - ". $cube->square()."\n";
-echo "Об'єм - ". $cube->volume()."\n";
-echo "Маса - ". $cube->mass()."\n";
+echo "Параллелепіпед : <br>";
+echo "Площа - ". $parallelepiped->square()."<br>";
+echo "Об'єм - ". $parallelepiped->volume()."<br>";
+echo "Маса - ". $parallelepiped->mass()."<br><br>";
 
-echo "Параллелепіпед"."\n";
-echo "Площа - ". $parallelepiped->square()."\n";
-echo "Об'єм - ". $parallelepiped->volume()."\n";
-echo "Маса - ". $parallelepiped->mass()."\n";
+echo "Піраміда : <br>";
+echo "Площа - ". $pyramid->square()."<br>";
+echo "Об'єм - ". $pyramid->volume()."<br>";
+echo "Маса - ". $pyramid->mass()."<br><br>";
 
-echo "Піраміда"."\n";
-echo "Площа - ". $pyramid->square()."\n";
-echo "Об'єм - ". $pyramid->volume()."\n";
-echo "Маса - ". $pyramid->mass()."\n";
+echo "Куля : <br>";
+echo "Площа - ". $sphere->square()."<br>";
+echo "Об'єм - ". $sphere->volume()."<br>";
+echo "Маса - ". $sphere->mass()."<br><br>";
 
-echo "Куля"."\n";
-echo "Площа - ". $sphere->square()."\n";
-echo "Об'єм - ". $sphere->volume()."\n";
-echo "Маса - ". $sphere->mass()."\n";
+echo "---------------------------------------------------------------------------------------------------------------------<br>";
+echo "Додаткове завдання : <br><br>";
+//----------------------------------------------------------------------------------------------
+$n = 5;
 
-?>
+for ($y = 0; $y < $n; $y++) {
+    for ($x = 0; $x < $n; $x++) {
+        $p = rand(0,3);
+        if ($p == 0){
+            $arr[$x][$y] = new Cube(5, 4, 3);
+
+        }
+        elseif ($p == 1){
+            $arr[$x][$y] = new Parallelepiped(5, 4, 3, 10, 11);
+
+        }
+        elseif ($p == 2){
+            $arr[$x][$y] = new Pyramid(5, 4, 3, 10, 2);
+
+        }
+        elseif ($p == 3){
+            $arr[$x][$y] = new Sphere(5, 4);
+
+        }
+    }
+}
+//----------------------------------------------------------------------------------------------
+echo "Початкова таблиця : <br><br>";
+echo "<table border=1 ><tr>";
+
+for ($y = 0; $y < $n; $y++) {
+    for ($x = 0; $x < $n; $x++) {
+        echo "<td width=200>".$arr[$x][$y]->getName()." (".$arr[$x][$y]->mass().")</td>";
+    }
+    echo "</tr><tr>";
+}
+echo "</tr></table><br><br>";
+//----------------------------------------------------------------------------------------------
+echo "Відсортована таблиця : <br><br>";
+function compare($x, $y)
+{
+    if($x->mass() == $y->mass())
+        return 0;
+    elseif ($x->mass() < $y->mass())
+        return -1;
+    else
+        return 1;
+}
+
+for ($x = 0; $x < $n; $x++) {
+    usort($arr[$x], compare);
+}
+
+echo "<table border=1 ><tr>";
+
+for ($y = 0; $y < $n; $y++) {
+    for ($x = 0; $x < $n; $x++) {
+        echo "<td width=200>".$arr[$x][$y]->getName()." (".$arr[$x][$y]->mass().")</td>";
+    }
+    echo "</tr><tr>";
+}
+echo "</tr></table>";
